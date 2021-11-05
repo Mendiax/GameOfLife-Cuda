@@ -17,7 +17,6 @@ x86
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Fortran module files
 *.mod
@@ -27,7 +26,6 @@ x86
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
