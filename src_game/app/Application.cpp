@@ -1,8 +1,8 @@
 #include <iostream>
-#include <kernel.cuh>
+#include <engine/cuda/kernel.cuh>
 
 int main(void)
 {
-	mainCuda();
+
 	return 0;
 }

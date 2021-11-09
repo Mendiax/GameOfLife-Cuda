@@ -81,13 +81,13 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="src\kernel.cu" />
+    <CudaCompile Include="src\cuda\kernel.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\application.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\kernel.cuh" />
+    <ClInclude Include="inc\cuda\kernel.cuh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
