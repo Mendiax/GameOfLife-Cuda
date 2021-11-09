@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../inc/kernel.cuh"
+#include <kernel.cuh>
 
 int main(void)
 {
