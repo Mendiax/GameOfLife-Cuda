@@ -2,7 +2,8 @@
 #include <iostream>
 
 #include <engine/board.h>
-#include <engine/cuda/kernel.cuh>
+#include <engine/cuda/GpuCompute.h>
+#include <engine/BoardComputeInterface.h>
 #include <graphic/test.h>
 
 using namespace std;
@@ -10,8 +11,6 @@ using namespace std;
 int main(void)
 {
 	cout << "Game of Life" << endl;
-	opengltest();
-	mainCuda();//test
 	cout << "Reading settings from file" << endl;
 	uint32_t boardWidth, boardHeight;
 
@@ -23,9 +22,12 @@ int main(void)
 
 	cout << "Initializing memory" << endl;
 	Board board(boardWidth, boardHeight);
+	BoardComputeInterface* computeEngine = new GpuCompute(&board);
 	cout << "OK" << endl;
 
 	cout << "Initializing CUDA" << endl;
+
+	
 
 	cout << "OK" << endl;
 
