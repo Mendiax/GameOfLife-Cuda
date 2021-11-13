@@ -13,15 +13,17 @@ private:
 	void freeMemory() override;
 
 	/*allocate memory and set size*/
-	BciError mallocMemory(Board* board_p) override;
+	BciError mallocMemory() override;
 
 public:
 	/*allocate memory, link board */
 	GpuCompute(Board* board_p)
 		: board(board_p)
 	{
-		mallocMemory(board_p);
+		mallocMemory();
 	}
+
+	~GpuCompute();
 
 	/*set board*/
 	void setBoard(Board* board_p) override;
@@ -29,8 +31,8 @@ public:
 	/*calculate next state of each cell from board and save in board*/
 	BciError calculateBoxes() override;
 
-	/*flip state of box with index of x*/
-	BciError flipBox(uint64_t x) override;
+	/*flip state of box with index of x, y*/
+	BciError flipCellStatus(uint32_t x, uint32_t y) override;
 };
 
 #endif

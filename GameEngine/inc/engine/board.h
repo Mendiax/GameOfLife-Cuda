@@ -7,12 +7,13 @@
 */
 class Board
 {
+private:
 	uint32_t rowCount = 0;
 	uint32_t collumCount = 0;
 
 	uint64_t cellsArraySize;
 	bool* cellsArray_p;
-
+	
 public:
 	/**
 	* main constructor

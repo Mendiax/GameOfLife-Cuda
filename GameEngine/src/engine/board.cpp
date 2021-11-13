@@ -7,11 +7,11 @@ Board::Board(uint32_t w, uint32_t h)
 	this->rowCount = w;
 	this->collumCount = h;
 	this->cellsArraySize = (uint64_t)w * (uint64_t)h;
-	this->cellsArray_p = new bool[this->cellsArraySize];
+	this->cellsArray_p = (bool*)calloc(this->cellsArraySize, sizeof(bool));
 }
 
 Board::~Board() {
-	delete[] this->cellsArray_p;
+	free(this->cellsArray_p);
 }
 
 bool* Board::getBoardArray() {
