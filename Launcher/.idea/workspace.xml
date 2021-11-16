@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="528d7b4b-498c-4884-abb4-53a9cc1e7dbd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../src_game/app/Application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../src_game/app/Application.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,13 +53,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -80,6 +83,7 @@
       <workItem from="1636890113135" duration="1017000" />
       <workItem from="1636892083418" duration="4905000" />
       <workItem from="1636928069858" duration="387000" />
+      <workItem from="1637082305125" duration="311000" />
     </task>
     <servers />
   </component>
