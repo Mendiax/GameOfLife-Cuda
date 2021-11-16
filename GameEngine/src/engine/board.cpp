@@ -1,16 +1,17 @@
 #include <engine/board.h>
 #include <iostream>
+#include <cassert>
 
 Board::Board(uint32_t w, uint32_t h)
 {
 	this->rowCount = w;
 	this->collumCount = h;
 	this->cellsArraySize = (uint64_t)w * (uint64_t)h;
-	this->cellsArray_p = new bool[this->cellsArraySize];
+	this->cellsArray_p = (bool*)calloc(this->cellsArraySize, sizeof(bool));
 }
 
 Board::~Board() {
-	delete[] this->cellsArray_p;
+	free(this->cellsArray_p);
 }
 
 bool* Board::getBoardArray() {
@@ -29,8 +30,14 @@ uint32_t Board::getHeight() {
 	return this->collumCount;
 }
 
-uint32_t Board::getCell(uint32_t i, uint32_t j) {
-	return  this->cellsArray_p[j * getWidth() + i];
+uint64_t Board::getCellId(uint32_t i, uint32_t j) {
+	assert(i < rowCount);
+	assert(j < collumCount);
+	return  static_cast<uint64_t>(j) * getWidth() + i;
+}
+
+bool Board::getCell(uint32_t i, uint32_t j) {
+	return  this->cellsArray_p[getCellId(i,j)];
 }
 
 void Board::print() {
