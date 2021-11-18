@@ -1,11 +1,20 @@
 #include <iostream>
-#include <iostream>
-
+#include <filesystem>
+#include <windows.h>
+#include <fstream>
 #include <engine/board.h>
 #include <engine/cuda/kernel.cuh>
 #include <graphic/test.h>
 
 using namespace std;
+
+std::string GetExeFileName()
+{
+	char buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	std::string f = std::string(buffer);
+	return f.substr(0, f.find_last_of("\\/"));
+}
 
 int main(void)
 {
@@ -15,9 +24,21 @@ int main(void)
 	cout << "Reading settings from file" << endl;
 	uint32_t boardWidth, boardHeight;
 
-	//change it later
-	boardWidth = 10;
-	boardHeight = 10;
+	ifstream file(GetExeFileName() + "\\inputData.txt");
+	if (file.is_open()) {
+		std::string line;
+		file >> boardWidth;
+		file >> boardHeight;
+
+		cout << "board width: " << boardWidth << endl;
+		cout << "board height: " << boardHeight << endl;
+
+		file.close();
+	}
+	else {
+		cout << "Input file missing";
+		return 1;
+	}
 
 	cout << "OK" << endl;
 
@@ -32,3 +53,4 @@ int main(void)
 	board.print();
 	return 0;
 }
+
