@@ -5,12 +5,21 @@
 #include <GLFW/glfw3.h>
 #include "../../GameEngine/inc/engine/board.h"
 
+/**
+* Painter is used to create window and paint a board in openGL
+*/
 class Painter
 {
 public:
+	/**
+	* Constructor arguments are width and height of board
+	*/
 	Painter(int width, int height);
 	~Painter();
 
+	/**
+	* Use this method to paint a board
+	*/
 	int paint(Board& board);
 
 
