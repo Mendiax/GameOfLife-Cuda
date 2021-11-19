@@ -51,9 +51,9 @@ int main(void)
 
 	cout << "OK" << endl;
 
-	Painter painter;
+	Painter painter(board.getWidth(), board.getHeight());
 
-	painter.paint(board);
+	while(!painter.paint(board));
 
 	return 0;
 }
