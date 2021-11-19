@@ -84,10 +84,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\engine\board.h" />
+    <ClInclude Include="inc\engine\BoardComputeInterface.h" />
+    <ClInclude Include="inc\engine\cuda\GpuCompute.h" />
     <ClInclude Include="inc\engine\cuda\kernel.cuh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\board.cpp" />
+    <ClCompile Include="src\engine\cuda\GpuCompute.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

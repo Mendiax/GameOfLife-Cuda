@@ -5,6 +5,7 @@
 #include <engine/board.h>
 #include <engine/cuda/kernel.cuh>
 #include <graphic/test.h>
+#include <graphic/painter.h>
 
 using namespace std;
 
@@ -19,8 +20,8 @@ std::string GetExeFileName()
 int main(void)
 {
 	cout << "Game of Life" << endl;
-	opengltest();
-	mainCuda();//test
+	//opengltest();
+	//mainCuda();
 	cout << "Reading settings from file" << endl;
 	uint32_t boardWidth, boardHeight;
 
@@ -50,7 +51,10 @@ int main(void)
 
 	cout << "OK" << endl;
 
-	board.print();
+	Painter painter;
+
+	painter.paint(board);
+
 	return 0;
 }
 

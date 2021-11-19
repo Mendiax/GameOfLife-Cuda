@@ -2,15 +2,18 @@
 #define BOARD_H
 
 #include <cstdint>
-
+/**
+* Used to store state of all cells. It is read only, so modifing board should be only made by BoardCoputeInterface!
+*/
 class Board
 {
+private:
 	uint32_t rowCount = 0;
 	uint32_t collumCount = 0;
 
 	uint64_t cellsArraySize;
 	bool* cellsArray_p;
-
+	
 public:
 	/**
 	* main constructor
@@ -42,10 +45,16 @@ public:
 	* @return number of rows
 	*/
 	uint32_t getHeight();
+
+	/**
+	* @return index of cellsArray[i][j]
+	*/
+	uint64_t getCellId(uint32_t i, uint32_t j);
+
 	/**
 	* @return cellsArray[i][j]
 	*/
-	uint32_t getCell(uint32_t i, uint32_t j);
+	bool getCell(uint32_t i, uint32_t j);
 
 	/**
 	* prints board
