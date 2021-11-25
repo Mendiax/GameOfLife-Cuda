@@ -9,36 +9,48 @@ GpuCompute::~GpuCompute()
 }
 
 
-BciError GpuCompute::flipCellStatus(uint32_t x, uint32_t y)
+BciError_E GpuCompute::flipCellStatus(uint32_t x, uint32_t y)
 {
 	uint64_t id = this->board->getCellId(x, y);
-	board->getBoardArray()[id] = !board->getBoardArray()[id];
-	gpu::flipCellStatus(id);
-	return BciError::OK;
+	gpu::flipCellStatus(id, gpuData);
+	gpu::getCellArray(board->getBoardArray(), gpuData);
+	return BciError_E::BCI_OK;
 }
 
-BciError GpuCompute::calculateBoxes()
+BciError_E GpuCompute::calculateBoxes()
 {
-	gpu::calculateWithCuda(board->getBoardArray());
-	return BciError::OK;
+	cudaError_t cudaStatus;
+	cudaStatus = gpu::calculateWithCuda(board->getBoardArray(), gpuData);
+	if (cudaStatus == cudaSuccess)
+		return BciError_E::BCI_OK;
+	else
+		return BciError_E::BCI_ERROR;
 }
 
-BciError GpuCompute::mallocMemory()
+BciError_E GpuCompute::mallocMemory()
 {
-	gpu::mallocMemory(board->getSize());
-	return BciError::OK;
+	gpu::mallocMemory(gpuData);
+	return BciError_E::BCI_OK;
 }
 
 void GpuCompute::freeMemory()
 {
-	gpu::freeMemory();
-	board = nullptr;
+	gpu::freeMemory(gpuData);
+	board = 0;
 }
 
 void GpuCompute::setBoard(Board* board_p)
 {
-	if(board != nullptr)
+	if(board)
 		freeMemory();
 	this->board = board_p;
+	//set gpu data
+	gpuData.cellsStatusLength = board->getSize();
+	gpuData.cellsStatusRowLength = board->getWidth();
+	std::cout 
+		<< gpuData.dev_cellsStatusIn_p << ", "
+		<< gpuData.dev_cellsStatusOut_p << ", " 
+		<< gpuData.cellsStatusRowLength << ", "
+		<< gpuData.cellsStatusLength << std::endl;
 	mallocMemory();
 }

@@ -147,13 +147,11 @@
   <ItemGroup>
     <ClInclude Include="inc\glad\glad.h" />
     <ClInclude Include="inc\graphic\painter.h" />
-    <ClInclude Include="inc\graphic\test.h" />
     <ClInclude Include="inc\KHR\khrplatform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\painter.cpp" />
-    <ClCompile Include="src\test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -44,7 +44,7 @@ void Board::print() {
 	std::cout << "Printig board array" << std::endl;
 	for (uint64_t i = 0; i < getHeight(); i++) {
 		for (uint64_t j = 0; j < getWidth(); j++) {
-			std::cout << cellsArray_p[j];
+			std::cout << getCell(i,j);
 		}
 		std::cout << std::endl;
 	}

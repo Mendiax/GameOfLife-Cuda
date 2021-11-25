@@ -1,13 +1,14 @@
 #ifndef BOARDCOPUTEINTERFACE_H
 #define BOARDCOPUTEINTERFACE_H
 
-#include "Board.h"
+#include <engine/board.h>
 /**
 * Enum for error checking for BoardComputeInterface
 */
-enum class BciError {
-	OK,
-	ERROR
+
+enum class BciError_E {
+	BCI_OK,
+	BCI_ERROR
 };
 
 /**
@@ -22,7 +23,7 @@ protected:
 	virtual void freeMemory() = 0;
 
 	/*allocate memory and set size*/
-	virtual BciError mallocMemory() = 0;
+	virtual BciError_E mallocMemory() = 0;
 
 	BoardComputeInterface(){
 		board = nullptr;
@@ -38,10 +39,10 @@ public:
 	virtual void setBoard(Board* board_p) = 0;
 
 	/*calculate next state of each cell from board and save in board*/
-	virtual BciError calculateBoxes() = 0;
+	virtual BciError_E calculateBoxes() = 0;
 
 	/*flip state of box with index of x, y*/
-	virtual BciError flipCellStatus(uint32_t x, uint32_t y) = 0;
+	virtual BciError_E flipCellStatus(uint32_t x, uint32_t y) = 0;
 
 };
 

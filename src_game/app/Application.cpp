@@ -2,10 +2,9 @@
 #include <filesystem>
 #include <windows.h>
 #include <fstream>
-#include <engine/board.h>
-#include <engine/cuda/kernel.cuh>
-#include <graphic/test.h>
+#include <engine/cuda/GpuCompute.h>
 #include <graphic/painter.h>
+#include <chrono>
 
 using namespace std;
 
@@ -20,8 +19,6 @@ std::string GetExeFileName()
 int main(void)
 {
 	cout << "Game of Life" << endl;
-	//opengltest();
-	//mainCuda();
 	cout << "Reading settings from file" << endl;
 	uint32_t boardWidth, boardHeight;
 
@@ -48,12 +45,29 @@ int main(void)
 	cout << "OK" << endl;
 
 	cout << "Initializing CUDA" << endl;
-
+	GpuCompute gpu(&board);
 	cout << "OK" << endl;
 
 	Painter painter(board.getWidth(), board.getHeight());
+	//start timer
+	auto start = std::chrono::steady_clock::now();
+	double time = 1.0;
+	while (!painter.paint(board)) {
+		;
+		auto end = std::chrono::steady_clock::now();
+		std::chrono::duration<double> elapsed_seconds = end - start;
+		if (elapsed_seconds.count() >= time)
+		{
+			auto startUpdate = std::chrono::high_resolution_clock::now();
+			if (gpu.calculateBoxes() == BciError_E::BCI_ERROR)
+				break;
 
-	while(!painter.paint(board));
+			auto endUpdate = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double> elapsed_seconds_Update = endUpdate - startUpdate;
+			std::cout << "update takes: " << elapsed_seconds_Update.count() * 1000.0 << " millis\n";
+			start = std::chrono::steady_clock::now();
+		}
+	}
 
 	return 0;
 }
