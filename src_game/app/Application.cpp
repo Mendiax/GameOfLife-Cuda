@@ -53,7 +53,6 @@ int main(void)
 	auto start = std::chrono::steady_clock::now();
 	double time = 1.0;
 	while (!painter.paint(board)) {
-		;
 		auto end = std::chrono::steady_clock::now();
 		std::chrono::duration<double> elapsed_seconds = end - start;
 		if (elapsed_seconds.count() >= time)

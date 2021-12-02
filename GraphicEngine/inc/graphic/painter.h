@@ -22,6 +22,11 @@ public:
 	*/
 	int paint(Board& board);
 
+	void setMouseX(float x);
+	void setMouseY(float y);
+
+	void click();
+	
 
 private:
 	GLFWwindow* window;
@@ -33,7 +38,9 @@ private:
 	void createVertices();
 
 	void createBuffers();
-	
+
+	void createCallbacks();
+
 	const int width;
 	const int height;
 	const int screen_width = 800;
@@ -57,6 +64,9 @@ private:
 	const float backgroundBlue  = 0.00f;
 
 	const float backgroundAlpha = 1.0f;
+
+	int mouseX = screen_width / 2.0;
+	int mouseY = screen_height / 2.0;
 
 	float* vertices = 0;
 	int verticiesLength;

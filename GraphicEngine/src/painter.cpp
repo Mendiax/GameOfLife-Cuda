@@ -1,4 +1,5 @@
-#include "../inc/graphic/painter.h"
+#include "graphic/painter.h"
+#include "input/userInput.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -15,6 +16,8 @@ Painter::Painter(int width, int height) : width(width), height(height) {
 	createShaders();
 
 	createVertices();
+
+	createCallbacks();
 }
 
 Painter::~Painter() {
@@ -63,6 +66,16 @@ int Painter::paint(Board& board) {
 	}
 
 	return shouldClose;
+}
+
+void Painter::setMouseX(float x)
+{
+	mouseX = x;
+}
+
+void Painter::setMouseY(float y)
+{
+	mouseY = y;
 }
 
 void Painter::createWindow()
@@ -237,4 +250,14 @@ void Painter::createShaders()
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+}
+
+void Painter::click() {
+	std::cout << "I was clicked in (" << mouseX << ", " << mouseY << ")" << std::endl;
+}
+
+void Painter::createCallbacks() {
+	glfwSetWindowUserPointer(window, this);
+	glfwSetCursorPosCallback(window, cursorPositionCallback);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
 }
