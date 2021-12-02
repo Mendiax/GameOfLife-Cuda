@@ -25,8 +25,8 @@ public:
 	void setMouseX(float x);
 	void setMouseY(float y);
 
-	void click();
-	
+	void press();
+	void getPress(bool& isPressed, int& cellX, int& cellY);
 
 private:
 	GLFWwindow* window;
@@ -70,6 +70,8 @@ private:
 
 	float* vertices = 0;
 	int verticiesLength;
+
+	bool isPressed = false;
 };
 
 #endif

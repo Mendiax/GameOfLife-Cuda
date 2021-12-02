@@ -1,4 +1,4 @@
-#include "input/userInput.h"
+#include "input/input.h"
 
 /**
 * Nie mo¿na zastosowaæ metody klasy Painter jako argumentu glfwSetCursorPosCallback.
@@ -16,6 +16,6 @@ void cursorPositionCallback(GLFWwindow* window, double xPos, double yPos) {
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		Painter* painter = (Painter*)(glfwGetWindowUserPointer(window));
-		painter->click();
+		painter->press();
 	}
 }

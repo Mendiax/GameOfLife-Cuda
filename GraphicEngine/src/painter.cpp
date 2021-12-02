@@ -1,5 +1,5 @@
 #include "graphic/painter.h"
-#include "input/userInput.h"
+#include "input/input.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -252,8 +252,31 @@ void Painter::createShaders()
 	glDeleteShader(fragmentShader);
 }
 
-void Painter::click() {
-	std::cout << "I was clicked in (" << mouseX << ", " << mouseY << ")" << std::endl;
+void Painter::press() {
+	isPressed = true;
+	std::cout << "Window was pressed in (" << mouseX << ", " << mouseY << ")" << std::endl;
+}
+
+void Painter::getPress(bool& isPressed, int& cellX, int& cellY)
+{	
+	// Zalecane by³oby u¿ycie zmiennych atomowych (do pozycji myszki i zmiennej isPressed wewn¹trz klasy Painter)
+	isPressed = this->isPressed;
+	
+	if (!isPressed)
+	{
+		return;
+	}
+
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+
+	int cellWidth = width / this->width;
+	int cellHeight = height / this->height;
+
+	cellX = mouseX / cellWidth;
+	cellY = mouseY / cellHeight;
+
+	this->isPressed = false;
 }
 
 void Painter::createCallbacks() {

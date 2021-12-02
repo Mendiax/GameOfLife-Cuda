@@ -53,6 +53,15 @@ int main(void)
 	auto start = std::chrono::steady_clock::now();
 	double time = 1.0;
 	while (!painter.paint(board)) {
+
+		bool isPressed;
+		int cellX, cellY;
+		painter.getPress(isPressed, cellX, cellY);
+
+		if (isPressed) {
+			std::cout << "Cell (" << cellX << ", " << cellY << ") was pressed" << std::endl;
+		}
+
 		auto end = std::chrono::steady_clock::now();
 		std::chrono::duration<double> elapsed_seconds = end - start;
 		if (elapsed_seconds.count() >= time)

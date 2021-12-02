@@ -21,7 +21,7 @@
     <ClCompile Include="src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\userInput.cpp">
+    <ClCompile Include="src\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="inc\KHR\khrplatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\input\userInput.h">
+    <ClInclude Include="inc\input\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
