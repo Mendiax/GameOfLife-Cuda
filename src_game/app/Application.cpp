@@ -60,6 +60,7 @@ int main(void)
 
 		if (isPressed) {
 			std::cout << "Cell (" << cellX << ", " << cellY << ") was pressed" << std::endl;
+			board.getBoardArray()[board.getCellId(cellX, cellY)] = 1;
 		}
 
 		auto end = std::chrono::steady_clock::now();

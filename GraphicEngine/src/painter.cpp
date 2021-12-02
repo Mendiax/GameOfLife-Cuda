@@ -274,7 +274,7 @@ void Painter::getPress(bool& isPressed, int& cellX, int& cellY)
 	int cellHeight = height / this->height;
 
 	cellX = mouseX / cellWidth;
-	cellY = mouseY / cellHeight;
+	cellY = (this->height - 1)  - mouseY / cellHeight;
 
 	this->isPressed = false;
 }
