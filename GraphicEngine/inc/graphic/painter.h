@@ -11,38 +11,29 @@
 class Painter
 {
 public:
-	/**
-	* Constructor arguments are width and height of board
-	*/
 	Painter(int width, int height);
 	~Painter();
 
-	/**
-	* Use this method to paint a board
-	*/
+	// methods used by the user
 	int paint(Board& board);
+	void getPress(bool& isPressed, int& cellX, int& cellY);
+	bool isStarted();
 
+	// methods used by GLFW library
 	void setMouseX(float x);
 	void setMouseY(float y);
-
 	void setDirection(int direction);
-
 	void press();
-	void getPress(bool& isPressed, int& cellX, int& cellY);
-
 	void zoom(int zoomValue);
+	void startStop();
 
 private:
 	GLFWwindow* window;
 
 	void createWindow();
-
 	void createShaders();
-
 	void createVertices();
-
 	void createBuffers();
-
 	void createCallbacks();
 
 	const int width;
@@ -69,22 +60,23 @@ private:
 
 	const float backgroundAlpha = 1.0f;
 
-	int mouseX = screen_width / 2.0;
-	int mouseY = screen_height / 2.0;
-
+	float margin = 0.0f;
 	float* vertices = 0;
-	int verticiesLength;
-
-	bool isPressed = false;
 
 	double zoomValue = 1.0;
-
-	int zoomLocation;
-	int moveLocation;
-
+	
 	float move = 0.015625; // 1.0 / 2.0^6
 	float dx = 0;
 	float dy = 0;
+
+	int mouseX = screen_width / 2;
+	int mouseY = screen_height / 2;
+	int verticiesLength = 0;
+	int zoomLocation = 0;
+	int moveLocation = 0;
+
+	bool isPressed = false;
+	bool start = true;
 };
 
 #endif

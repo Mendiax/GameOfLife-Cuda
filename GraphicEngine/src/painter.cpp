@@ -137,7 +137,8 @@ void Painter::createVertices()
 	const float cellWidth  = screenWidth / width;
 	const float cellHeight = screenHeight / height;
 
-	const float margin = 0.01f;
+	const float marginConst = 16.0f;
+	margin = (cellWidth / marginConst < cellHeight / marginConst) ? cellWidth / marginConst : cellHeight / marginConst;
 
 	const float x0 = -screenWidth / 2.0f;
 	const float y0 = -screenHeight / 2.0f;
@@ -289,7 +290,6 @@ void Painter::press() {
 
 void Painter::getPress(bool& isPressed, int& cellX, int& cellY)
 {
-	// Zalecane by³oby u¿ycie zmiennych atomowych (do pozycji myszki i zmiennej isPressed wewn¹trz klasy Painter)
 	isPressed = this->isPressed;
 
 	if (!isPressed)
@@ -309,6 +309,12 @@ void Painter::getPress(bool& isPressed, int& cellX, int& cellY)
 	double mouseX_dx = mouseX - dx * w / 2.0;
 	double mouseY_dy = mouseY + dy * h / 2.0;
 
+	if (mouseX_dx < 0 || mouseY_dy > height)
+	{
+		isPressed = false;
+		this->isPressed = false;
+	}
+
 	double nX = wz / 2.0 - (w / 2.0 - mouseX_dx);
 	double nY = hz / 2.0 - (h / 2.0 - mouseY_dy);
 
@@ -318,7 +324,8 @@ void Painter::getPress(bool& isPressed, int& cellX, int& cellY)
 	cellX = nX / cellWidth;
 	cellY = this->height - nY / cellHeight;
 
-	if (cellX < 0 || cellX >= this->width || cellY < 0 || cellY >= this->height) {
+	if (cellX < 0 || cellX >= this->width || cellY < 0 || cellY >= this->height)
+	{
 		isPressed = false;
 	}
 
@@ -343,7 +350,18 @@ void Painter::zoom(int zoomValue)
 	glUniform1f(zoomLocation, this->zoomValue);
 }
 
-void Painter::createCallbacks() {
+bool Painter::isStarted()
+{
+	return this->start;
+}
+
+void Painter::startStop()
+{
+	this->start = !this->start;
+}
+
+void Painter::createCallbacks()
+{
 	glfwSetWindowUserPointer(window, this);
 	glfwSetCursorPosCallback(window, cursorPositionCallback);
 	glfwSetMouseButtonCallback(window, mouseButtonCallback);
