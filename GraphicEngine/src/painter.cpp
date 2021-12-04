@@ -1,4 +1,5 @@
-#include "../inc/graphic/painter.h"
+#include "graphic/painter.h"
+#include "input/input.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -15,6 +16,8 @@ Painter::Painter(int width, int height) : width(width), height(height) {
 	createShaders();
 
 	createVertices();
+
+	createCallbacks();
 }
 
 Painter::~Painter() {
@@ -65,6 +68,37 @@ int Painter::paint(Board& board) {
 	return shouldClose;
 }
 
+void Painter::setMouseX(float x)
+{
+	mouseX = x;
+}
+
+void Painter::setMouseY(float y)
+{
+	mouseY = y;
+}
+
+void Painter::setDirection(int direction)
+{
+	switch (direction) {
+		case GLFW_KEY_LEFT:
+			dx -= move;
+			break;
+		case GLFW_KEY_RIGHT:
+			dx += move;
+			break;
+		case GLFW_KEY_DOWN:
+			dy -= move;
+			break;
+		case GLFW_KEY_UP:
+			dy += move;
+			break;
+	}
+
+	std::cout << dx << ", " << dy << std::endl;
+	glUniform2f(moveLocation, dx, dy);
+}
+
 void Painter::createWindow()
 {
 	if (!glfwInit()) {
@@ -103,7 +137,8 @@ void Painter::createVertices()
 	const float cellWidth  = screenWidth / width;
 	const float cellHeight = screenHeight / height;
 
-	const float margin = 0.01f;
+	const float marginConst = 16.0f;
+	margin = (cellWidth / marginConst < cellHeight / marginConst) ? cellWidth / marginConst : cellHeight / marginConst;
 
 	const float x0 = -screenWidth / 2.0f;
 	const float y0 = -screenHeight / 2.0f;
@@ -191,10 +226,12 @@ void Painter::createShaders()
 	const char* vertexShaderSource = "#version 330 core\n"
 		"layout (location = 0) in vec3 aPos;\n"
 		"layout (location = 1) in vec3 aColor;\n"
+		"uniform float u_zoom;\n"
+		"uniform vec2 u_d;\n"
 		"out vec3 ourColor;\n"
 		"void main()\n"
 		"{\n"
-		"   gl_Position = vec4(aPos, 1.0);\n"
+		"   gl_Position = vec4(aPos.xy * u_zoom + u_d, 0.0, 1.0);\n"
 		"   ourColor = aColor;\n"
 		"}\0";
 
@@ -235,6 +272,99 @@ void Painter::createShaders()
 
 	glUseProgram(shaderProgram);
 
+	zoomLocation = glGetUniformLocation(shaderProgram, "u_zoom");
+	zoomValue = 1.0f;
+	glUniform1f(zoomLocation, zoomValue);
+
+	moveLocation = glGetUniformLocation(shaderProgram, "u_d");
+	glUniform2f(moveLocation, dx, dy);
+	
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+}
+
+void Painter::press() {
+	isPressed = true;
+	std::cout << "Window was pressed in (" << mouseX << ", " << mouseY << ")" << std::endl;
+}
+
+void Painter::getPress(bool& isPressed, int& cellX, int& cellY)
+{
+	isPressed = this->isPressed;
+
+	if (!isPressed)
+	{
+		return;
+	}
+
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+
+	double w = (double)width;
+	double h = (double)height;
+
+	double wz = w * zoomValue;
+	double hz = h * zoomValue;
+
+	double mouseX_dx = mouseX - dx * w / 2.0;
+	double mouseY_dy = mouseY + dy * h / 2.0;
+
+	if (mouseX_dx < 0 || mouseY_dy > height)
+	{
+		isPressed = false;
+		this->isPressed = false;
+	}
+
+	double nX = wz / 2.0 - (w / 2.0 - mouseX_dx);
+	double nY = hz / 2.0 - (h / 2.0 - mouseY_dy);
+
+	double cellWidth = wz / this->width;
+	double cellHeight = hz / this->height;
+
+	cellX = nX / cellWidth;
+	cellY = this->height - nY / cellHeight;
+
+	if (cellX < 0 || cellX >= this->width || cellY < 0 || cellY >= this->height)
+	{
+		isPressed = false;
+	}
+
+	this->isPressed = false;
+}
+
+void Painter::zoom(int zoomValue)
+{
+	if (zoomValue >= 1) {
+		this->zoomValue += 0.1;
+	}
+	else if (zoomValue <= -1) {
+		this->zoomValue -= 0.1;
+
+		if (this->zoomValue < 1.0) {
+			this->zoomValue = 1.0;
+		}
+	}
+
+	std::cout << "zoomValue = " << this->zoomValue << std::endl;
+
+	glUniform1f(zoomLocation, this->zoomValue);
+}
+
+bool Painter::isStarted()
+{
+	return this->start;
+}
+
+void Painter::startStop()
+{
+	this->start = !this->start;
+}
+
+void Painter::createCallbacks()
+{
+	glfwSetWindowUserPointer(window, this);
+	glfwSetCursorPosCallback(window, cursorPositionCallback);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
+	glfwSetScrollCallback(window, scrollCallback);
+	glfwSetKeyCallback(window, keyCallback);
 }

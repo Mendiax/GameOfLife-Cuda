@@ -53,19 +53,32 @@ int main(void)
 	auto start = std::chrono::steady_clock::now();
 	double time = 1.0;
 	while (!painter.paint(board)) {
-		;
-		auto end = std::chrono::steady_clock::now();
-		std::chrono::duration<double> elapsed_seconds = end - start;
-		if (elapsed_seconds.count() >= time)
-		{
-			auto startUpdate = std::chrono::high_resolution_clock::now();
-			if (gpu.calculateBoxes() == BciError_E::BCI_ERROR)
-				break;
 
-			auto endUpdate = std::chrono::high_resolution_clock::now();
-			std::chrono::duration<double> elapsed_seconds_Update = endUpdate - startUpdate;
-			std::cout << "update takes: " << elapsed_seconds_Update.count() * 1000.0 << " millis\n";
-			start = std::chrono::steady_clock::now();
+		bool isPressed;
+		int cellX, cellY;
+		painter.getPress(isPressed, cellX, cellY);
+
+		// Test
+		if (isPressed) {
+			std::cout << "Cell (" << cellX << ", " << cellY << ") was pressed" << std::endl;
+			gpu.flipCellStatus(cellX, cellY);
+		}
+
+		if (painter.isStarted())
+		{
+			auto end = std::chrono::steady_clock::now();
+			std::chrono::duration<double> elapsed_seconds = end - start;
+			if (elapsed_seconds.count() >= time)
+			{
+				auto startUpdate = std::chrono::high_resolution_clock::now();
+				if (gpu.calculateBoxes() == BciError_E::BCI_ERROR)
+					break;
+
+				auto endUpdate = std::chrono::high_resolution_clock::now();
+				std::chrono::duration<double> elapsed_seconds_Update = endUpdate - startUpdate;
+				std::cout << "update takes: " << elapsed_seconds_Update.count() * 1000.0 << " millis\n";
+				start = std::chrono::steady_clock::now();
+			}
 		}
 	}
 
