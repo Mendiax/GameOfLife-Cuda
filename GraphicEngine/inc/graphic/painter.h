@@ -25,8 +25,12 @@ public:
 	void setMouseX(float x);
 	void setMouseY(float y);
 
+	void setDirection(int direction);
+
 	void press();
 	void getPress(bool& isPressed, int& cellX, int& cellY);
+
+	void zoom(int zoomValue);
 
 private:
 	GLFWwindow* window;
@@ -72,6 +76,15 @@ private:
 	int verticiesLength;
 
 	bool isPressed = false;
+
+	double zoomValue = 1.0;
+
+	int zoomLocation;
+	int moveLocation;
+
+	float move = 0.015625; // 1.0 / 2.0^6
+	float dx = 0;
+	float dy = 0;
 };
 
 #endif

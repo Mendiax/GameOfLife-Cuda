@@ -1,4 +1,5 @@
 #include "input/input.h"
+#include <iostream>
 
 /**
 * Nie mo¿na zastosowaæ metody klasy Painter jako argumentu glfwSetCursorPosCallback.
@@ -18,4 +19,21 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 		Painter* painter = (Painter*)(glfwGetWindowUserPointer(window));
 		painter->press();
 	}
+}
+
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Painter* painter = (Painter*)(glfwGetWindowUserPointer(window));
+	painter->zoom(yoffset);
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action != GLFW_PRESS && key != GLFW_KEY_LEFT && key != GLFW_KEY_RIGHT && key != GLFW_KEY_UP && key != GLFW_KEY_DOWN)
+	{
+		return;
+	}
+
+	Painter* painter = (Painter*)(glfwGetWindowUserPointer(window));
+	painter->setDirection(key);
 }

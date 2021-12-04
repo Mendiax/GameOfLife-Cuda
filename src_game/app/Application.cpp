@@ -58,6 +58,7 @@ int main(void)
 		int cellX, cellY;
 		painter.getPress(isPressed, cellX, cellY);
 
+		// Test
 		if (isPressed) {
 			std::cout << "Cell (" << cellX << ", " << cellY << ") was pressed" << std::endl;
 			board.getBoardArray()[board.getCellId(cellX, cellY)] = 1;
