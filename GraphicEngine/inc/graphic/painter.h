@@ -46,17 +46,17 @@ private:
 	unsigned int vertexBufferObject;
 	unsigned int vertexArrayObject;
 
-	const float defaultRed      = 0.47f;
-	const float defaultGreen    = 0.43f;
+	const float defaultRed      = 0.00f;
+	const float defaultGreen    = 0.00f;
 	const float defaultBlue     = 0.00f;
 
-	const float aliveRed        = 0.90f;
-	const float aliveGreen      = 0.00f;
-	const float aliveBlue       = 0.00f;
+	const float aliveRed        = 1.00f;
+	const float aliveGreen      = 1.00f;
+	const float aliveBlue       = 1.00f;
 
-	const float backgroundRed   = 1.00f;
-	const float backgroundGreen = 0.98f;
-	const float backgroundBlue  = 0.00f;
+	const float backgroundRed   = 0.10f;
+	const float backgroundGreen = 0.10f;
+	const float backgroundBlue  = 0.10f;
 
 	const float backgroundAlpha = 1.0f;
 
