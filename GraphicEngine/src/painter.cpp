@@ -309,12 +309,6 @@ void Painter::getPress(bool& isPressed, int& cellX, int& cellY)
 	double mouseX_dx = mouseX - dx * w / 2.0;
 	double mouseY_dy = mouseY + dy * h / 2.0;
 
-	if (mouseX_dx < 0 || mouseY_dy > height)
-	{
-		isPressed = false;
-		this->isPressed = false;
-	}
-
 	double nX = wz / 2.0 - (w / 2.0 - mouseX_dx);
 	double nY = hz / 2.0 - (h / 2.0 - mouseY_dy);
 
