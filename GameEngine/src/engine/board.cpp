@@ -40,10 +40,22 @@ bool Board::getCell(uint32_t i, uint32_t j) {
 	return  this->cellsArray_p[getCellId(i,j)];
 }
 
+void Board::getCordsFromId(uint64_t i, uint32_t* x, uint32_t* y) {
+	assert(i < getSize());
+	*x = 0;
+	*y = 0;
+	while (i > getWidth())
+	{
+		i -= getWidth();
+		*y += 1;
+	}
+	*x = i;
+}
+
 void Board::print() {
 	std::cout << "Printig board array" << std::endl;
-	for (uint64_t i = 0; i < getHeight(); i++) {
-		for (uint64_t j = 0; j < getWidth(); j++) {
+	for (uint64_t j = 0; j < getWidth(); j++) {
+		for (uint64_t i = 0; i < getHeight(); i++) {
 			std::cout << getCell(i,j);
 		}
 		std::cout << std::endl;

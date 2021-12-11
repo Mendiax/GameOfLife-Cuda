@@ -76,7 +76,7 @@ private:
 	int moveLocation = 0;
 
 	bool isPressed = false;
-	bool start = true;
+	bool start = false;
 };
 
 #endif

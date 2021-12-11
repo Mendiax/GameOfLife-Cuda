@@ -13,6 +13,21 @@ struct GpuData
 };
 namespace gpu
 {
+	__device__ __host__ void moveUp(unsigned long long int* id,
+										   unsigned long long int rowCount, 
+										   unsigned long long int sizeOfBoxArray);
+
+	__device__ __host__ void moveDown(unsigned long long int* id,
+	                                         unsigned long long int rowCount,
+	                                         unsigned long long int sizeOfBoxArray);
+
+	__device__ __host__ void moveLeft(unsigned long long int* id,
+	                                         unsigned long long int rowCount,
+	                                         unsigned long long int sizeOfBoxArray);
+
+	__device__ __host__ void moveRight(unsigned long long int* id,
+	                                          unsigned long long int rowCount,
+	                                          unsigned long long int sizeOfBoxArray);
 
 	__global__ void calculateKernel(bool* boxesStatusIn, bool* boxesStatusOut, unsigned long long int row, unsigned long long int sizeOfArray);
 

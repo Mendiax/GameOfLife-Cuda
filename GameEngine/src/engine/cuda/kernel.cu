@@ -5,34 +5,31 @@
 #include <malloc.h>
 #include <iostream>
 
-__device__ uint16_t rowCount;
-__device__ uint16_t sizeOfBoxArray;
 
-
-__device__ void moveUp(int* id)
+__device__ __host__ void gpu::moveUp(unsigned long long int* id, unsigned long long int rowCount, unsigned long long int sizeOfBoxArray)
 {
 	if (*id + rowCount < sizeOfBoxArray)
 		*id += rowCount;
 	else
 		*id %= rowCount;
 }
-__device__ void moveDown(int* id)
+__device__ __host__ void gpu::moveDown(unsigned long long int* id, unsigned long long int rowCount, unsigned long long int sizeOfBoxArray)
 {
-	if (*id - rowCount >= 0)
+	if (*id >= rowCount)
 		*id -= rowCount;
 	else
-		*id -= rowCount + sizeOfBoxArray;
+		*id = (*id + sizeOfBoxArray) - rowCount;
 }
-__device__ void moveLeft(int* id)
+__device__ __host__ void gpu::moveLeft(unsigned long long int* id, unsigned long long int rowCount, unsigned long long int sizeOfBoxArray)
 {
 	if (0 == *id % rowCount)
-		*id = *id - 1 + rowCount;
+		*id = *id + (rowCount - 1);
 	else
 		*id -= 1;
 }
-__device__ void moveRight(int* id)
+__device__ __host__ void gpu::moveRight(unsigned long long int* id, unsigned long long int rowCount, unsigned long long int sizeOfBoxArray)
 {
-	if (rowCount - 1 == *id % rowCount)
+	if (rowCount == *id % rowCount + 1)
 		*id = *id + 1 - rowCount;
 	else
 		*id += 1;
@@ -40,12 +37,10 @@ __device__ void moveRight(int* id)
 
 __global__ void gpu::calculateKernel(bool* boxesStatusIn, bool* boxesStatusOut, unsigned long long int row, unsigned long long int sizeOfArray)
 {
-	rowCount = row;
-	sizeOfBoxArray = sizeOfArray;
-	__shared__ int boxId;
+	__shared__ long long int boxId;
 	__shared__ unsigned int sum;
 	__shared__ bool state;
-	__shared__ int id[8];
+	__shared__ unsigned long long int id[8];
 
 	if (threadIdx.x == 0)
 	{
@@ -64,32 +59,32 @@ __global__ void gpu::calculateKernel(bool* boxesStatusIn, bool* boxesStatusOut, 
 	switch (threadIdx.x)
 	{
 	case 0:
-		moveLeft(&id[threadIdx.x]);
-		moveUp(&id[threadIdx.x]);
+		moveLeft(&id[threadIdx.x],row, sizeOfArray);
+		moveUp(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	case 1:
-		moveUp(&id[threadIdx.x]);
+		moveUp(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	case 2:
-		moveRight(&id[threadIdx.x]);
-		moveUp(&id[threadIdx.x]);
+		moveRight(&id[threadIdx.x], row, sizeOfArray);
+		moveUp(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	case 3:
-		moveLeft(&id[threadIdx.x]);
+		moveLeft(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	case 4:
-		moveRight(&id[threadIdx.x]);
+		moveRight(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	case 5:
-		moveLeft(&id[threadIdx.x]);
-		moveDown(&id[threadIdx.x]);
+		moveLeft(&id[threadIdx.x], row, sizeOfArray);
+		moveDown(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	case 6:
-		moveDown(&id[threadIdx.x]);
+		moveDown(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	case 7:
-		moveRight(&id[threadIdx.x]);
-		moveDown(&id[threadIdx.x]);
+		moveRight(&id[threadIdx.x], row, sizeOfArray);
+		moveDown(&id[threadIdx.x], row, sizeOfArray);
 		break;
 	}
 	if (id[threadIdx.x] >= sizeOfArray || id[threadIdx.x] < 0)
