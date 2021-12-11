@@ -52,6 +52,12 @@ public:
 	uint64_t getCellId(uint32_t i, uint32_t j);
 
 	/**
+	* @return cords from id in x,y
+	*/
+	void getCordsFromId(uint64_t i, uint32_t* x, uint32_t* y);
+
+
+	/**
 	* @return cellsArray[i][j]
 	*/
 	bool getCell(uint32_t i, uint32_t j);
