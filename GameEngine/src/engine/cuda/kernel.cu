@@ -35,7 +35,7 @@ __device__ __host__ void gpu::moveRight(unsigned long long int* id, unsigned lon
 		*id += 1;
 }
 
-__global__ void gpu::calculateKernel(bool* boxesStatusIn, bool* boxesStatusOut, unsigned long long int row, unsigned long long int sizeOfArray)
+__global__ void gpu::calculateKernel(bool* boxesStatusIn, bool* boxesStatusOut, unsigned long long int row, unsigned long long int sizeOfArray, bool* lifeArray, bool* deathArray)
 {
 	__shared__ long long int boxId;
 	__shared__ unsigned int sum;
@@ -102,14 +102,14 @@ __global__ void gpu::calculateKernel(bool* boxesStatusIn, bool* boxesStatusOut, 
 		}
 		if (state)
 		{
-			if (sum == 3 || sum == 2)
+			if (lifeArray[sum])
 				boxesStatusOut[boxId] = true;
 			else
 				boxesStatusOut[boxId] = false;
 		}
 		else
 		{
-			if (sum == 3)
+			if (deathArray[sum])
 				boxesStatusOut[boxId] = true;
 			else
 				boxesStatusOut[boxId] = false;
@@ -124,17 +124,24 @@ void gpu::flipCellStatus(unsigned long long int x, GpuData& gpu)
 	cudaMemcpy(gpu.dev_cellsStatusIn_p, gpu.cellsStatusBuffer_p, gpu.cellsStatusLength * sizeof(bool), cudaMemcpyHostToDevice);
 }
 
+void gpu::setGameRules(GpuData& gpu, bool* lifeArray, bool* deathArray)
+{
+	cudaMemcpy(gpu.lifeArray, lifeArray, 9 * sizeof(bool), cudaMemcpyHostToDevice);
+	cudaMemcpy(gpu.deathArray, deathArray, 9 * sizeof(bool), cudaMemcpyHostToDevice);
+}
+
 void gpu::freeMemory(GpuData& gpu)
 {
 	fprintf(stderr, "cuda free memory!");
 	cudaFree(gpu.dev_cellsStatusOut_p);
 	cudaFree(gpu.dev_cellsStatusIn_p);
+	cudaFree(gpu.lifeArray);
+	cudaFree(gpu.deathArray);
 	// nie działa idk czemu
 	if (gpu.cellsStatusBuffer_p) {
 		free(gpu.cellsStatusBuffer_p);
 		gpu.cellsStatusBuffer_p = 0;
 	}
-
 	cudaError_t cudaStatus;
 	cudaStatus = cudaDeviceReset();
 	if (cudaStatus != cudaSuccess) {
@@ -146,6 +153,7 @@ cudaError_t gpu::mallocMemory(GpuData& gpu)
 {
 	gpu.cellsStatusBuffer_p = (bool*)malloc(gpu.cellsStatusLength * sizeof(bool));
 	memset(gpu.cellsStatusBuffer_p, 0, gpu.cellsStatusLength);
+
 	cudaError_t cudaStatus;
 	cudaStatus = cudaSetDevice(0);
 	if (cudaStatus != cudaSuccess) {
@@ -161,7 +169,7 @@ cudaError_t gpu::mallocMemory(GpuData& gpu)
 		return cudaStatus;
 	}
 
-	cudaStatus = cudaMalloc((void**)&gpu.dev_cellsStatusOut_p, gpu.cellsStatusLength * sizeof(bool));
+	cudaStatus = cudaMalloc((void**)&gpu.lifeArray, 9 * sizeof(bool));
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMalloc failed!");
 		freeMemory(gpu);
@@ -169,6 +177,40 @@ cudaError_t gpu::mallocMemory(GpuData& gpu)
 	}
 
 	bool* statusArray = (bool*)calloc(gpu.cellsStatusLength, sizeof(bool));
+	cudaStatus = cudaMemcpy(gpu.lifeArray, statusArray, 9 * sizeof(bool), cudaMemcpyHostToDevice);
+	free(statusArray);
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMemcpy failed!");
+		freeMemory(gpu);
+		return cudaStatus;
+	}
+
+	cudaStatus = cudaMalloc((void**)&gpu.deathArray, 9 * sizeof(bool));
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMalloc failed!");
+		freeMemory(gpu);
+		return cudaStatus;
+	}
+
+
+	cudaStatus = cudaMemcpy(gpu.deathArray, statusArray, 9 * sizeof(bool), cudaMemcpyHostToDevice);
+	free(statusArray);
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMemcpy failed!");
+		freeMemory(gpu);
+		return cudaStatus;
+	}
+
+
+
+	cudaStatus = cudaMalloc((void**)&gpu.dev_cellsStatusOut_p, gpu.cellsStatusLength * sizeof(bool));
+	if (cudaStatus != cudaSuccess) {
+		fprintf(stderr, "cudaMalloc failed!");
+		freeMemory(gpu);
+		return cudaStatus;
+	}
+
+	statusArray = (bool*)calloc(gpu.cellsStatusLength, sizeof(bool));
 	cudaStatus = cudaMemcpy(gpu.dev_cellsStatusIn_p, statusArray, gpu.cellsStatusLength * sizeof(bool), cudaMemcpyHostToDevice);
 	free(statusArray);
 	if (cudaStatus != cudaSuccess) {
@@ -187,9 +229,9 @@ cudaError_t gpu::calculateWithCuda(bool* statusArray, GpuData& gpu)
 	struct cudaDeviceProp properties;
 	cudaGetDeviceProperties(&properties, 0);
 	std::cout << "using " << properties.multiProcessorCount << " multiprocessors" << std::endl;
-	std::cout << "max threads per processor: " << properties.maxThreadsPerMultiProcessor << std::endl;
-	std::cout << gpu.dev_cellsStatusIn_p << ", " << gpu.dev_cellsStatusOut_p << ", " << gpu.cellsStatusRowLength << ", " << gpu.cellsStatusLength << std::endl;*/
-	calculateKernel << <gpu.cellsStatusLength, 8 >> > (gpu.dev_cellsStatusIn_p, gpu.dev_cellsStatusOut_p, gpu.cellsStatusRowLength, gpu.cellsStatusLength);
+	std::cout << "max threads per processor: " << properties.maxThreadsPerMultiProcessor << std::endl;*/
+	std::cout << gpu.dev_cellsStatusIn_p << ", " << gpu.dev_cellsStatusOut_p << ", " << gpu.cellsStatusRowLength << ", " << gpu.cellsStatusLength << ", " << gpu.lifeArray << ", " << gpu.deathArray << std::endl;//*/
+	calculateKernel << <gpu.cellsStatusLength, 8 >> > (gpu.dev_cellsStatusIn_p, gpu.dev_cellsStatusOut_p, gpu.cellsStatusRowLength, gpu.cellsStatusLength, gpu.lifeArray, gpu.deathArray);
 
 
 	cudaStatus = cudaGetLastError();

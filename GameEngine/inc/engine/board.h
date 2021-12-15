@@ -7,19 +7,22 @@
 */
 class Board
 {
+
 private:
 	uint32_t rowCount = 0;
 	uint32_t collumCount = 0;
 
 	uint64_t cellsArraySize;
 	bool* cellsArray_p;
+	bool* lifeArray;
+	bool* deathArray;
 	
 public:
 	/**
 	* main constructor
 	* @param w - width of a board, h - height of a board
 	*/
-	Board(uint32_t w, uint32_t h);
+	Board(uint32_t w, uint32_t h, bool* lifeArray, bool* deathArray);
 
 	/**
 	* main deconstructor
@@ -40,6 +43,16 @@ public:
 	* @return number of collums
 	*/
 	uint32_t getWidth();
+
+	/**
+	* @return life array
+	*/
+	bool* getLifeArray();
+
+	/**
+	* @return death array
+	*/
+	bool* getDeathArray();
 
 	/**
 	* @return number of rows

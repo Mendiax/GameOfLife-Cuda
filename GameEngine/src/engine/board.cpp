@@ -2,12 +2,14 @@
 #include <iostream>
 #include <cassert>
 
-Board::Board(uint32_t w, uint32_t h)
+Board::Board(uint32_t w, uint32_t h, bool* lifeArray, bool* deathArray)
 {
 	this->rowCount = w;
 	this->collumCount = h;
 	this->cellsArraySize = (uint64_t)w * (uint64_t)h;
 	this->cellsArray_p = (bool*)calloc(this->cellsArraySize, sizeof(bool));
+	this->lifeArray = lifeArray;
+    this->deathArray = deathArray;
 }
 
 Board::~Board() {
@@ -20,6 +22,13 @@ bool* Board::getBoardArray() {
 
 uint64_t Board::getSize() {
 	return this->cellsArraySize;
+}
+bool* Board::getLifeArray() {
+	return this->lifeArray;
+}
+
+bool* Board::getDeathArray() {
+	return this->deathArray;
 }
 
 uint32_t Board::getWidth() {
