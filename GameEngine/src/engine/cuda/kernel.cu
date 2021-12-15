@@ -198,7 +198,6 @@ cudaError_t gpu::mallocMemory(GpuData& gpu)
 	}
 
 
-	statusArray = (bool*)calloc(gpu.cellsStatusLength, sizeof(bool));
 	cudaStatus = cudaMemcpy(gpu.deathArray, statusArray, 9 * sizeof(bool), cudaMemcpyHostToDevice);
 	free(statusArray);
 	if (cudaStatus != cudaSuccess) {
