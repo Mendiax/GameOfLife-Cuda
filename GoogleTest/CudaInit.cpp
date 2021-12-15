@@ -6,6 +6,8 @@
 
 
 namespace CUDA {
+	bool life[] = { 0,0,1,1,0,0,0,0,0 };
+	bool death[] = { 0,0,0,1,0,0,0,0,0 };
 	void testMove(Board* board, uint32_t x, uint32_t y, int moveX, int moveY) {
 		unsigned long long int row = board->getWidth();
 		unsigned long long int size = board->getSize();
@@ -31,8 +33,7 @@ namespace CUDA {
 
 	TEST(Functions, move_up)
 	{
-
-		Board* board = new Board(5, 5);
+		Board* board = new Board(5, 5, life, death);
 		for (uint32_t x = 0; x < board->getWidth(); x++) {
 			for (uint32_t y = 0; y < board->getHeight(); y++) {
 				testMove(board, x, y, 0, 1);
@@ -44,7 +45,7 @@ namespace CUDA {
 	TEST(Functions, move_down)
 	{
 
-		Board* board = new Board(5, 5);
+		Board* board = new Board(5, 5, life, death);
 		for (uint32_t x = 0; x < board->getWidth(); x++) {
 			for (uint32_t y = 0; y < board->getHeight(); y++) {
 				testMove(board, x, y, 0, -1);
@@ -56,7 +57,7 @@ namespace CUDA {
 	TEST(Functions, move_left)
 	{
 
-		Board* board = new Board(5, 5);
+		Board* board = new Board(5, 5, life, death);
 		for (uint32_t x = 0; x < board->getWidth(); x++) {
 			for (uint32_t y = 0; y < board->getHeight(); y++) {
 				testMove(board, x, y, -1, 0);
@@ -68,7 +69,7 @@ namespace CUDA {
 	TEST(Functions, move_right)
 	{
 
-		Board* board = new Board(5, 5);
+		Board* board = new Board(5, 5, life, death);
 		for (uint32_t x = 0; x < board->getWidth(); x++) {
 			for (uint32_t y = 0; y < board->getHeight(); y++) {
 				testMove(board, x, y, 1, 0);
@@ -80,7 +81,7 @@ namespace CUDA {
 	TEST(Functions, move_all)
 	{
 
-		Board* board = new Board(5, 5);
+		Board* board = new Board(5, 5, life, death);
 		for (uint32_t x = 0; x < board->getWidth(); x++) {
 			for (uint32_t y = 0; y < board->getHeight(); y++) {
 				for (int dx = -1; dx <= 1; dx++) {
@@ -94,7 +95,7 @@ namespace CUDA {
 	}
 
 	TEST(Compute, Flip) {
-		Board testBoard(5, 5);
+		Board testBoard(5, 5, life, death);
 		std::cout << "board init" << std::endl;
 		testBoard.print();
 		GpuCompute compute(&testBoard);
@@ -114,7 +115,7 @@ namespace CUDA {
 
 	TEST(Compute, simple_cross_test)
 	{
-		Board* board = new Board(5, 5);
+		Board* board = new Board(5, 5, life, death);
 		GpuCompute* gpu = new GpuCompute(board);
 
 		gpu->flipCellStatus(1, 2);
@@ -124,7 +125,7 @@ namespace CUDA {
 		EXPECT_TRUE(board->getCell(2, 2));
 		EXPECT_TRUE(board->getCell(3, 2));
 
-		Board* expec = new Board(5, 5);
+		Board* expec = new Board(5, 5, life, death);
 		std::cout << "before:\n";
 
 		board->print();
