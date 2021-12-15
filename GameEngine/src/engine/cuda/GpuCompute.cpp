@@ -47,10 +47,12 @@ void GpuCompute::setBoard(Board* board_p)
 	//set gpu data
 	gpuData.cellsStatusLength = board->getSize();
 	gpuData.cellsStatusRowLength = board->getWidth();
+	
 	std::cout 
 		<< gpuData.dev_cellsStatusIn_p << ", "
 		<< gpuData.dev_cellsStatusOut_p << ", " 
 		<< gpuData.cellsStatusRowLength << ", "
 		<< gpuData.cellsStatusLength << std::endl;
 	mallocMemory();
+	gpu::setGameRules(gpuData, board->getLifeArray(), board->getDeathArray());
 }

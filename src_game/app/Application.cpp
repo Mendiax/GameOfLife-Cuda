@@ -21,15 +21,28 @@ int main(void)
 	cout << "Game of Life" << endl;
 	cout << "Reading settings from file" << endl;
 	uint32_t boardWidth, boardHeight;
+	bool* lifeArray = (bool*)calloc(9, sizeof(bool));
+	bool* deathArray = (bool*)calloc(9, sizeof(bool));
 
 	ifstream file(GetExeFileName() + "\\inputData.txt");
 	if (file.is_open()) {
-		std::string line;
+		
 		file >> boardWidth;
 		file >> boardHeight;
 
 		cout << "board width: " << boardWidth << endl;
 		cout << "board height: " << boardHeight << endl;
+		std::string lifeString;
+		std::string deathString;
+		file >> lifeString;
+		file >> deathString;
+		for (int i = 0; i < 9; i++) {
+			lifeArray[i] = lifeString[i] == '1';
+			deathArray[i] = deathString[i] == '1';
+		}
+		cout << "lifeArray: " << lifeString << endl;
+		cout << "deathArray: " << deathString << endl;
+
 
 		file.close();
 	}
@@ -41,7 +54,10 @@ int main(void)
 	cout << "OK" << endl;
 
 	cout << "Initializing memory" << endl;
-	Board board(boardWidth, boardHeight);
+	
+	lifeArray[8] = 1;
+
+	Board board(boardWidth, boardHeight, lifeArray, deathArray);
 	cout << "OK" << endl;
 
 	cout << "Initializing CUDA" << endl;
@@ -81,7 +97,8 @@ int main(void)
 			}
 		}
 	}
-
+	free(lifeArray);
+	free(deathArray);
 	return 0;
 }
 
